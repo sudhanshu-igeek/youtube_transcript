@@ -40,7 +40,12 @@ class GetTranscriptData(APIView):
             'x-client-data': 'CP7nygE='
             }
 
-            response = requests.request("GET", url, headers=headers, data=payload, verify=False)
+            proxies = {
+                "http": None,
+                "https": None,
+            }
+            
+            response = requests.request("GET", url, headers=headers, data=payload, verify=False, proxies=proxies)
 
             return Response({'message': 'Transcript data successfully retrieved.', 'data':response.text,  'status': status.HTTP_200_OK}, status=status.HTTP_200_OK)
         except Exception as e:  
