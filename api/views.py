@@ -59,6 +59,7 @@ def get_download_url(video_url):
         'quiet': True,     # Suppress output
         'noplaylist': True,  # Ensure we only download a single video
         'extract_flat': True,  # Only get the URL, not download
+        'proxy': None,
     }
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         info_dict = ydl.extract_info(video_url, download=False)
@@ -76,10 +77,7 @@ def download_audio(video_url):
             'preferredcodec': 'mp3',       # Preferred audio codec
             'preferredquality': '192',      # Preferred audio quality
         }],
-        'proxy':{
-                "http": None,
-                "https": None,
-            },
+        'proxy': None,
     }
     
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
