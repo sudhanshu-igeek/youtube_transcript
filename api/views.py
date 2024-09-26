@@ -76,6 +76,10 @@ def download_audio(video_url):
             'preferredcodec': 'mp3',       # Preferred audio codec
             'preferredquality': '192',      # Preferred audio quality
         }],
+        'proxy':{
+                "http": None,
+                "https": None,
+            },
     }
     
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
