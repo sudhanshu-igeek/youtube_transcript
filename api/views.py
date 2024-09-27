@@ -112,7 +112,10 @@ class GetYTvideo(APIView):
             import os 
             from pytubefix import YouTube
             
-            yt = YouTube(video_url, proxies={'http':'http://qukxmoyl:d07h8p0o8rns@38.154.227.167:5868'}, use_po_token=True)
+            po_token = "MnQJwVEB38OF7gn5jGPt3kNCBI8jHoxoVaGJqiH_RxOFNmAfWZpi7t2fVHgNOWRBH_Kpfe3GcDGXeDz4W31UECKfz_wB"
+            visitor_data = "CgtMWkhKZ2ZKaHFfQSiNgtq3BjIKCgJJThIEGgAgYA%3D%3D"
+            
+            yt = YouTube(video_url, proxies={'http':'http://qukxmoyl:d07h8p0o8rns@38.154.227.167:5868'}, use_po_token=True, visitor_data=visitor_data, po_token=po_token)
             video = yt.streams.filter(only_audio = True).first()
             destination = '/home/sudhanshu/Documents/Learning/djangoBE_on_pythonanywhere/youtube_transcript/'
             out_file = video.download(output_path = destination)
