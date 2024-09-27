@@ -109,15 +109,24 @@ class GetYTvideo(APIView):
             #     print("Failed to get the download URL.")
             #     return Response({'message': 'Failed to download the video.', 'data': None,'status': status.HTTP_500_INTERNAL_SERVER_ERROR}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
-            import os 
+            import os, json 
             from pytubefix import YouTube
             
             # po_token = "MnQJwVEB38OF7gn5jGPt3kNCBI8jHoxoVaGJqiH_RxOFNmAfWZpi7t2fVHgNOWRBH_Kpfe3GcDGXeDz4W31UECKfz_wB"
             # visitor_data = "CgtMWkhKZ2ZKaHFfQSiNgtq3BjIKCgJJThIEGgAgYA%3D%3D"
             
-
-            yt = YouTube(video_url, 'WEB_CREATOR') # proxies={'http':'http://qukxmoyl:d07h8p0o8rns@38.154.227.167:5868'},
-
+            data = {
+            "access_token": "ya29.a0AcM612zdtzYR3Xia_5D2zdkcpE08d_5L06fdHmjNmVr9jokTRfJILeAKJz8E2g5mWYBz7hQPSGy9_3EWL0h-gwecaMqO_SW_Tjvh4__WcFqPJjq6HcNd5pdQ32vN1TMlPBajqlU6U0YuleNzgw6RZ_1s3xuBJkMwdYeX1dYiaCgYKAe4SARESFQHGX2MiZ23NH1rNntHNYW1157oeHw0175", 
+            "expires": 1758973344, 
+            "refresh_token": "1//042dYPmhVbXyuCgYIARAAGAQSNwF-L9IrLSEYDtYXE5Ib_H-rztRLQY69PCQRSBQBGdXKFS9rleyAnd5QfanyTnmmIG9fCkiYues"
+            }
+            with open("test.json",'w') as f:
+                json.dump(data, f)
+                
+            # yt = YouTube(video_url, 'WEB_CREATOR') # proxies={'http':'http://qukxmoyl:d07h8p0o8rns@38.154.227.167:5868'},
+            yt = YouTube(
+                    video_url, use_oauth=True, allow_oauth_cache=True, token_file="test.json"
+            )
             video = yt.streams.filter(only_audio = True).first()
             
             destination = '/home/sudhanshu/Documents/Learning/djangoBE_on_pythonanywhere/youtube_transcript/'
