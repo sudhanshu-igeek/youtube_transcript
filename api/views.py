@@ -51,43 +51,47 @@ class GetTranscriptData(APIView):
         except Exception as e:  
             return Response({'message': str(e), 'data': None,'status': status.HTTP_500_INTERNAL_SERVER_ERROR}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
-import yt_dlp
+# import yt_dlp
 
-def get_download_url(video_url):
-    ydl_opts = {
-        'format': 'best',  # Get the best available quality
-        'quiet': True,     # Suppress output
-        'noplaylist': True,  # Ensure we only download a single video
-        'extract_flat': True,  # Only get the URL, not download
-        # 'proxy': 'http://qukxmoyl:d07h8p0o8rns@38.154.227.167:5868',
-        'cookiefile': 'cookies.txt'
-    }
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        info_dict = ydl.extract_info(video_url, download=False)
-        download_url = info_dict.get('url', None)
-        return download_url
+# def get_download_url(video_url):
+#     ydl_opts = {
+#         'format': 'best',  # Get the best available quality
+#         # 'username': 'sudhanshu.igeek@gmail.com',
+#         # 'password': 'Sudhanshu@iGeek18',
+#         'quiet': True,     # Suppress output
+#         'noplaylist': True,  # Ensure we only download a single video
+#         'extract_flat': True,  # Only get the URL, not download
+#         'geo_bypass': True,
+#         'proxy': 'http://qukxmoyl:d07h8p0o8rns@38.154.227.167:5868',
+#         'cookiefile': 'cookies.txt'
+#     }
+#     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+#         info_dict = ydl.extract_info(video_url, download=False)
+#         download_url = info_dict.get('url', None)
+#         return download_url
 
-def download_audio(video_url):
-    ydl_opts = {
-        'format': 'bestaudio/best',  # Download the best audio available
-        'extractaudio': True,         # Extract audio
-        'audioformat': 'mp3',         # Specify audio format (can be mp3, wav, etc.)
-        'outtmpl': '%(title)s.%(ext)s',  # Template for output filename
-        'postprocessors': [{           # Define postprocessors
-            'key': 'FFmpegExtractAudio',  # Use FFmpeg to convert audio
-            'preferredcodec': 'mp3',       # Preferred audio codec
-            'preferredquality': '192',      # Preferred audio quality
-        }],
-        # 'proxy': 'http://qukxmoyl:d07h8p0o8rns@38.154.227.167:5868',
-        'cookiefile': 'cookies.txt'
-    }
+# def download_audio(video_url):
+#     ydl_opts = {
+#         'format': 'bestaudio/best',  # Download the best audio available
+#         'extractaudio': True,         # Extract audio
+#         'audioformat': 'mp3',         # Specify audio format (can be mp3, wav, etc.)
+#         'outtmpl': '%(title)s.%(ext)s',  # Template for output filename
+#         'postprocessors': [{           # Define postprocessors
+#             'key': 'FFmpegExtractAudio',  # Use FFmpeg to convert audio
+#             'preferredcodec': 'mp3',       # Preferred audio codec
+#             'preferredquality': '192',      # Preferred audio quality
+#         }],
+#         'geo_bypass': True,
+#         'proxy': 'http://qukxmoyl:d07h8p0o8rns@38.154.227.167:5868',
+#         'cookiefile': 'cookies.txt'
+#     }
     
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        try:
-            ydl.download([video_url])
-            print("Audio downloaded successfully.")
-        except Exception as e:
-            print(f"An error occurred: {e}")
+#     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+#         try:
+#             ydl.download([video_url])
+#             print("Audio downloaded successfully.")
+#         except Exception as e:
+#             print(f"An error occurred: {e}")
             
             
 class GetYTvideo(APIView):
@@ -95,16 +99,27 @@ class GetYTvideo(APIView):
         # try:
             video_url = request.data.get('url', None)
 
-            download_audio(video_url)
-            download_url = get_download_url(video_url)
+            # download_audio(video_url)
+            # download_url = get_download_url(video_url)
 
-            if download_url:
-                print(f"Download URL: {download_url}")
-                return Response({'message': 'Video downloaded successfully.', 'data': download_url,'status': status.HTTP_200_OK}, status=status.HTTP_200_OK)
-            else:
-                print("Failed to get the download URL.")
-                return Response({'message': 'Failed to download the video.', 'data': None,'status': status.HTTP_500_INTERNAL_SERVER_ERROR}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            # if download_url:
+            #     print(f"Download URL: {download_url}")
+            #     return Response({'message': 'Video downloaded successfully.', 'data': download_url,'status': status.HTTP_200_OK}, status=status.HTTP_200_OK)
+            # else:
+            #     print("Failed to get the download URL.")
+            #     return Response({'message': 'Failed to download the video.', 'data': None,'status': status.HTTP_500_INTERNAL_SERVER_ERROR}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
+            import os 
+            from pytubefix import YouTube
+            
+            yt = YouTube(video_url, proxies=None)
+            video = yt.streams.filter(only_audio = True).first()
+            destination = '/home/sudhanshu/Documents/Learning/djangoBE_on_pythonanywhere/youtube_transcript/'
+            out_file = video.download(output_path = destination)
+            base, ext = os.path.splitext(out_file)
+            new_file = base + '.mp3'
+            os.rename(out_file, new_file)
+            return Response({'message':'Success', 'status':status.HTTP_200_OK}, status=status.HTTP_200_OK)
         # except Exception as e:
         #     # Handle other potential exceptions like invalid URLs, etc.
         #     return Response({'message': str(e), 'data': None,'status': status.HTTP_500_INTERNAL_SERVER_ERROR}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
